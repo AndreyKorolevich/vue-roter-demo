@@ -3,12 +3,13 @@
     <h2>{{ teamName }}</h2>
     <ul>
       <user-item
-        v-for="member in members"
-        :key="member.id"
-        :name="member.fullName"
-        :role="member.role"
+          v-for="member in members"
+          :key="member.id"
+          :name="member.fullName"
+          :role="member.role"
       ></user-item>
     </ul>
+    <router-link to="/teams/t3">User team №3</router-link>
   </section>
 </template>
 
@@ -17,6 +18,7 @@ import UserItem from '../users/UserItem.vue';
 
 export default {
   inject: ['teams', 'users'],
+  props: ['teamId'],
   components: {
     UserItem
   },
@@ -27,17 +29,25 @@ export default {
     };
   },
   created() {
-    this.getMembers()
+    this.getMembers(this.teamId)
   },
-  methods:{
-    getMembers() {
-      const teamId = this.$route.params.teamId
+  methods: {
+    getMembers(teamId) {
       const team = this.teams.find(t => t.id === teamId)
       this.teamName = team.name
 
+      const newMembers = []
+
       team.members.forEach(m => {
-        this.members.push(this.users.find(u => u.id === m))
+        newMembers.push(this.users.find(u => u.id === m))
       })
+
+      this.members = newMembers
+    }
+  },
+  watch: {
+    teamId(newTeamId) {
+      this.getMembers(newTeamId)
     }
   }
 };
