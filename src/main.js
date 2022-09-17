@@ -6,6 +6,7 @@ import TeamsList from "@/components/teams/TeamsList";
 import UsersList from "@/components/users/UsersList";
 import TeamMembers from "@/components/teams/TeamMembers";
 import NotFound from "../src/components/notFound/notFound"
+import Footer from "@/components/footer/Footer";
 
 
 const router = createRouter({
@@ -15,19 +16,25 @@ const router = createRouter({
             path: '/', redirect: '/teams'
         },
         {
-            path: '/teams', component: TeamsList, children: [
+            path: '/teams',
+            components: {default: TeamsList, footer: Footer},
+            children: [
                 {
                     name:'team-members', path: ':teamId', component: TeamMembers, props: true
                 },
             ]
         },
         {
-            path: '/users', component: UsersList
+            path: '/users',  components: {default: UsersList, footer: Footer},
         },
         {
             path: '/:notFound(.*)', component: NotFound
-        }
-    ]
+        },
+    ],
+    scrollBehavior(to, from, d) {
+        console.log(to, from, d)
+        return {top: 1000, left: 0}
+    }
 })
 
 const app = createApp(App)
